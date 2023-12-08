@@ -71,76 +71,14 @@ def lista_comunas(request):
 
 
 def buscar(request):
-    comunas = Comuna.objects.all()
-
-    # Inicializa costo_total fuera del bucle
-    costo_total = 0  
-
     if request.method == 'POST':
-        fecha_inicio = request.POST.get('fecha_inicio')
-        hora_inicio = request.POST.get('hora_inicio')
-        fecha_fin = request.POST.get('fecha_fin')
-        hora_fin = request.POST.get('hora_fin')
-        comuna_nombre = request.POST.get('comuna_seleccionada')
+        estacionamientos_disponibles = Estacionamiento.objects.filter(habilitado=True)
         
-        
-        print("Fecha inicio:", fecha_inicio)
-        print("Hora inicio:", hora_inicio)
-        print("Fecha fin:", fecha_fin)
-        print("Hora fin:", hora_fin)
-        print("Costo total:", costo_total)
-        
+        return render(request, 'estacionamiento/mostrar_estacionamiento.html', {
+            'estacionamientos_disponibles': estacionamientos_disponibles,
+        })
 
-        # Encuentra la comuna por su nombre
-        comuna = Comuna.objects.get(comuna=comuna_nombre)
-
-        # Crea objetos de zona horaria para asegurarte de que se manejen correctamente las fechas y horas
-        tz = pytz.timezone('America/Santiago')
-
-        fecha_inicio = tz.localize(datetime.strptime(fecha_inicio, '%Y-%m-%d'))
-        hora_inicio = tz.localize(datetime.strptime(hora_inicio, '%H:%M'))
-        fecha_fin = tz.localize(datetime.strptime(fecha_fin, '%Y-%m-%d'))
-        hora_fin = tz.localize(datetime.strptime(hora_fin, '%H:%M'))
-
-        fecha_inicio_formulario = datetime.combine(fecha_inicio.date(), hora_inicio.time()).astimezone(tz)
-
-        # Obtén la fecha y hora actual con la misma zona horaria
-        ahora = datetime.now(tz)
-
-        # Filtra estacionamientos disponibles
-        if ahora <= fecha_inicio_formulario:
-            estacionamientos_disponibles = Estacionamiento.objects.exclude(
-                id__in=Arrendamiento.objects.filter(
-                    Q(fecha_fin__gte=fecha_inicio, fecha_inicio__lte=fecha_fin) &
-                    Q(hora_fin__gte=hora_inicio, hora_inicio__lte=hora_fin)
-                ).values('estacionamiento__id')
-            ).filter(comuna=comuna)
-
-            # Calcula las horas totales
-            tiempo_transcurrido = fecha_fin - fecha_inicio + (hora_fin - hora_inicio)
-            horas_totales = tiempo_transcurrido.total_seconds() / 3600
-
-            for estacionamiento in estacionamientos_disponibles:
-                costo_por_hora=estacionamiento.costo_por_hora
-                print(horas_totales)
-                print(costo_por_hora)
-                costo_total = costo_por_hora * horas_totales  # Calcula el precio total para este estacionamiento            
-                print(costo_total)
-
-            # Pasa los valores calculados al contexto
-            return render(request, 'estacionamiento/mostrar_estacionamiento.html', {
-                'estacionamientos_disponibles': estacionamientos_disponibles,
-                'horas_totales': horas_totales,
-                'costo_total': costo_total,
-                'fecha_inicio': fecha_inicio,
-                'hora_inicio': hora_inicio,
-                'fecha_fin': fecha_fin,
-                'hora_fin': hora_fin,                
-            })
-        else:
-            messages.error(request, "No hay estacionamientos disponibles en la comuna seleccionada.")
-
-    return render(request, 'estacionamiento/buscar.html', {'comunas': comunas})
+    return render(request, 'estacionamiento/buscar.html')
 
     
 def pago_exitoso(request):
@@ -231,60 +169,17 @@ def error(request):
 
 
 
-def confirmar_reserva(request, estacionamiento_id, fecha_inicio, fecha_fin, hora_inicio, hora_fin):
-    try:
-        # Convertir las cadenas a objetos datetime sin información de la zona horaria
-        fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d %H:%M:%S%z')
-        fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d %H:%M:%S%z')
-
-        # Establecer explícitamente la hora en las fechas
-        hora_inicio = datetime.strptime(hora_inicio, '%Y-%m-%d %H:%M:%S%z').time()
-        hora_fin = datetime.strptime(hora_fin, '%Y-%m-%d %H:%M:%S%z').time()
-        fecha_inicio = datetime.combine(fecha_inicio.date(), hora_inicio)
-        fecha_fin = datetime.combine(fecha_fin.date(), hora_fin)
-
-        # Obtener el usuario actual como cliente
-        cliente = request.user.cliente
-
-        # Crear una instancia del modelo Arrendamiento con los valores convertidos y el cliente
-        arrendamiento = Arrendamiento(
-            cliente=cliente,
-            estacionamiento_id=estacionamiento_id,
-            fecha_inicio=fecha_inicio.date(),
-            fecha_fin=fecha_fin.date(),
-            hora_inicio=fecha_inicio.time(),
-            hora_fin=fecha_fin.time(),
-            estado='activo'
-        )
-
-        # Calcular las horas totales de la reserva
-        tiempo_transcurrido = fecha_fin - fecha_inicio
-        horas_totales = tiempo_transcurrido.total_seconds() / 3600
-
-        # Obtener el estacionamiento
-        estacionamiento = Estacionamiento.objects.get(id=estacionamiento_id)
-
-        # Calcular el precio total
-        precio_total = estacionamiento.costo_por_hora * horas_totales
-
-        # Asignar el precio total al arrendamiento
-        arrendamiento.precio = precio_total
-
-        # Guardar la instancia en la base de datos
-        arrendamiento.save()
-
-        # Resto del código...
-
-        # Devolver una respuesta exitosa
-        return redirect('pago_exitoso')
-
-    except Exception as e:
-        # Imprimir o registrar cualquier excepción para entender el problema
-        print("Error en la conversión de fechas y horas:", str(e))
-
-        # Puedes agregar un mensaje de error a la respuesta para que puedas verlo en el navegador
-        return HttpResponse(f"Error en la confirmación de reserva: {str(e)}", status=500)
+def confirmar_reserva(request, estacionamiento_id):
+    # Obtén el estacionamiento utilizando su ID
+    estacionamiento = get_object_or_404(Estacionamiento, id=estacionamiento_id)
     
+    # Cambia el estado de habilitado a deshabilitado
+    estacionamiento.habilitado = False  # Cambia a deshabilitado
+
+    # Guarda el cambio en la base de datos
+    estacionamiento.save()
+
+    return redirect('pago_exitoso')
     
 def estacionamiento_dueno(request):
     # Verifica si el usuario está autenticado
