@@ -1,0 +1,34 @@
+
+{% extends 'estacionamiento/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>Bienvenido a Nuestra Compañía de Arriendos</h1>
+                <p>
+                    Somos una empresa dedicada al arriendo de estacionamientos por día y hora. Nuestra misión es ofrecer a nuestros clientes soluciones de estacionamiento confiables y convenientes.
+                </p>
+                <p>
+                    Ya sea que necesites un estacionamiento para un evento especial o para tu uso diario, estamos aquí para ayudarte a encontrar la mejor opción.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <img src="{% static 'img/arriendos.jpeg' %}" alt="Imagen de la Compañía" class="img-fluid">
+            </div>
+        </div>
+        <form method="post" action="{% url 'buscar' %}">
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+            {% if user.is_owner %}
+                <a href="" class="btn">Registrar Estacionamiento</a>
+            {% else %}
+                <a href="{% url 'buscar' %}" class="btn">Buscar un Estacionamiento</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'buscar' %}" class="btn">Buscar un Estacionamiento</a>
+        {% endif %}
+        </form>
+    </div>
+{% endblock %}
