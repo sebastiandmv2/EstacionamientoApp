@@ -15,7 +15,7 @@ urlpatterns=[
      path('editar_arrendamiento/<int:arrendamiento_id>/', views.editar_arrendamiento, name='editar_arrendamiento'),
      path('confirmar_cancelacion/', views.confirmar_cancelacion, name='confirmar_cancelacion'),
      path('cancelar_reserva/<int:arrendamiento_id>/', views.cancelar_reserva, name='cancelar_reserva'),
-     path('confirmar_reserva/<int:estacionamiento_id>/<str:fecha_inicio>/<str:fecha_fin>/<str:hora_inicio>/<str:hora_fin>/', views.confirmar_reserva, name='confirmar_reserva'),
+     path('confirmar_reserva/<int:estacionamiento_id>/', views.confirmar_reserva, name='confirmar_reserva'),
      path('deshabilitar_estacionamiento/<int:estacionamiento_id>/', views.deshabilitar_estacionamiento, name='deshabilitar_estacionamiento'),
      path('habilitar_estacionamiento/<int:estacionamiento_id>/', views.habilitar_estacionamiento, name='habilitar_estacionamiento'),
      path('error/', views.error, name='error'),
@@ -24,6 +24,8 @@ urlpatterns=[
      path('reportes/',views.reportes, name='reportes'),
      path('generar_informe_pdf/', views.generar_informe_pdf, name='generar_informe_pdf'),
      path('perfil/', views.perfil, name='perfil'),
-     path('registro_vehiculo/', views.registro_vehiculo, name='registro_vehiculo'),     
+     path('registro_vehiculo/', views.registro_vehiculo, name='registro_vehiculo'), 
+     path('agregar-estacionamiento/', views.agregar_estacionamiento, name='agregar_estacionamiento'),
+    
 
 ]

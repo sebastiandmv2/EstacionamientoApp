@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.db import transaction
 from django.core.exceptions import ValidationError
-from .models import User,Dueno,Cliente, Vehiculo
+from .models import User,Dueno,Cliente, Vehiculo, Estacionamiento
 
 class DuenoSignUpForm(UserCreationForm):
     rut = forms.CharField(required=True)
@@ -75,3 +75,8 @@ class RegistroVehiculoForm(forms.ModelForm):
     class Meta:
         model = Vehiculo
         fields = ['marca', 'modelo', 'patente']
+
+class EstacionamientoForm(forms.ModelForm):
+    class Meta:
+        model = Estacionamiento
+        fields = ['direccion', 'complemento', 'tamano', 'comuna', 'costo_por_hora', 'habilitado']
