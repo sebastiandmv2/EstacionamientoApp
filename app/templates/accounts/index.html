@@ -6,29 +6,84 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-8">
-                <h1>Bienvenido a Nuestra Compañía de Arriendos</h1>
-                <p>
-                    Somos una empresa dedicada al arriendo de estacionamientos por día y hora. Nuestra misión es ofrecer a nuestros clientes soluciones de estacionamiento confiables y convenientes.
-                </p>
-                <p>
-                    Ya sea que necesites un estacionamiento para un evento especial o para tu uso diario, estamos aquí para ayudarte a encontrar la mejor opción.
-                </p>
-            </div>
-            <div class="col-md-4">
-                <img src="{% static 'img/arriendos.jpeg' %}" alt="Imagen de la Compañía" class="img-fluid">
+                <h1>Bienvenido a SmartPark Connect</h1>
             </div>
         </div>
-        <form method="post" action="{% url 'buscar' %}">
+        
+    
+        
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                En SmartPark Connect, nos enorgullece ser la referencia en soluciones de estacionamiento por día y hora. Nos dedicamos a proporcionar a nuestros clientes una experiencia de estacionamiento sin igual, respaldada por estándares de máxima calidad y un compromiso inquebrantable con la confianza y la comodidad.
+                </p>
+            </div>
+            <p>
+
+            </p>
+            <div class="col-md-12">
+                <img src="{% static 'img/arriendos.jpg' %}" alt="Imagen de la Compañía" class="img-fluid">
+            </div>
+
+    <div class="container mt-8">  
+        <div class="row">          
+            <div class="col-md-6">
+                <h3>Nuestra Misión</h3>
+                En el corazón de nuestra misión está el compromiso de ofrecer soluciones de estacionamiento confiables y convenientes. Ya sea que necesites un espacio para un evento especial o para tu rutina diaria, estamos aquí para simplificar tu búsqueda y proporcionarte la mejor opción disponible.
+            </div>
+            <p>
+                
+            </p>
+            <div class="col-md-6">
+                <h3>Lo que nos Hace Excepcionales: </h3>
+                <strong>Calidad Inigualable:</strong> Nuestros estacionamientos cumplen con los más altos estándares de calidad y seguridad. Cada espacio está diseñado para ofrecer la máxima protección a tu vehículo, proporcionando tranquilidad a nuestros clientes.
+                </p>
+                <strong>Respaldo de Confianza:</strong> Nos esforzamos por construir y mantener la confianza de nuestros clientes. Nuestra transparencia en tarifas, seguridad y servicio al cliente nos distingue como un socio confiable en tus necesidades de estacionamiento.
+                </p>
+                <strong>Conveniencia a tu Alcance:</strong> Simplificamos tu vida cotidiana al ofrecer opciones flexibles de arriendo por día y hora. Sea cual sea tu necesidad, estamos listos para adaptarnos a tu horario y proporcionarte un estacionamiento cuando más lo necesitas.
+                </p>
+            </div>
+        </div>
+    </div>    
+            
+            
+
+
+
+        
+        <form method="post" action="{% url 'buscar' %}" class="text-center mt-4">
             {% csrf_token %}
             {% if user.is_authenticated %}
-            {% if user.is_owner %}
-                <a href="" class="btn">Registrar Estacionamiento</a>
+                {% if user.is_owner %}
+                    <a href="" class="btn">Registrar Estacionamiento</a>
+                {% else %}
+                    <a href="{% url 'buscar' %}" class="btn" style="background-color: rgb(71, 133, 13); color: #ffffff; padding: 10px; display: inline-block; text-decoration: none; transition: background-color 0.2s;"
+                    onmouseover="this.style.backgroundColor='red'" onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+                        <i class="fas fa-car"></i> Buscar un Estacionamiento
+                    </a>
+                {% endif %}
             {% else %}
-                <a href="{% url 'buscar' %}" class="btn">Buscar un Estacionamiento</a>
+                <a href="{% url 'buscar' %}" class="btn" style="background-color: rgb(71, 133, 13); color: #ffffff; padding: 10px; display: inline-block; text-decoration: none; transition: background-color 0.2s;"
+                onmouseover="this.style.backgroundColor='red'" onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+                    <i class="fas fa-car"></i> Buscar un Estacionamiento
+                </a>
             {% endif %}
-        {% else %}
-            <a href="{% url 'buscar' %}" class="btn">Buscar un Estacionamiento</a>
-        {% endif %}
         </form>
-    </div>
+
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -6,8 +6,8 @@
     <div class="row">
         <div class="col-md-6 mx-auto">
             <div class="card" style="margin-top: 50px;">
-                <div class="card-header text-white" style="background-color: #4300BE; text-align: center;">
-                    <h2 style="color: white;">Register</h2>
+                <div class="card-header text-white" style="background-color: rgb(71, 133, 13); text-align: center;">
+                    <h2 style="color: white;">Registro</h2>
                 </div>
                 <div class="card-body">
                     <form action="{% url 'cliente_register' %}" method="POST" novalidate>
@@ -21,9 +21,14 @@
                             {% endfor %}
                         </div>
                         {% endfor %}
-                        <input type="submit" value="Register" class="btn btn-block" style="background-color: #FFA011;">
+
+                        <button type="submit" class="btn btn-block" style="background-color: rgb(71, 133, 13); color: #ffffff; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='red'" onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+                            <i class="fas fa-user-plus"></i> Registrar
+                        </button>
                     </form>
                 </div>
+                
             </div>
         </div>
     </div>
