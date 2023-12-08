@@ -24,6 +24,8 @@ urlpatterns=[
      path('reportes/',views.reportes, name='reportes'),
      path('generar_informe_pdf/', views.generar_informe_pdf, name='generar_informe_pdf'),
      path('perfil/', views.perfil, name='perfil'),
-     path('registro_vehiculo/', views.registro_vehiculo, name='registro_vehiculo'),     
+     path('registro_vehiculo/', views.registro_vehiculo, name='registro_vehiculo'), 
+     path('agregar-estacionamiento/', views.agregar_estacionamiento, name='agregar_estacionamiento'),
+    
 
 ]

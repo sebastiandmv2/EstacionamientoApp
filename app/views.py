@@ -3,7 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.views.generic import CreateView
-from .forms import DuenoSignUpForm, ClienteSignUpForm, RegistroVehiculoForm
+from .forms import DuenoSignUpForm, ClienteSignUpForm, RegistroVehiculoForm, EstacionamientoForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Arrendamiento, Comuna, Estacionamiento, User, Cliente, Calificacion
 import pytz
@@ -331,4 +331,16 @@ def registro_vehiculo(request):
         form = RegistroVehiculoForm()
 
     return render(request, 'accounts/registro_vehiculo.html', {'form': form})
+
+def agregar_estacionamiento(request):
+    if request.method == 'POST':
+        form = EstacionamientoForm(request.POST)
+        if form.is_valid():
+            estacionamiento = form.save(commit=False)
+            estacionamiento.dueno = request.user.dueno  # Asigna al dueño actual
+            estacionamiento.save()
+            return redirect('index')  # Redirige a la página de perfil o donde sea apropiado
+    else:
+        form = EstacionamientoForm()
+    return render(request, 'estacionamiento/agregar_estacionamiento.html', {'form': form})
 
