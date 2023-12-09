@@ -21,6 +21,8 @@ class Dueno(models.Model):
 class Comuna(models.Model):
     comuna = models.CharField(max_length=50)
     codigo_postal = models.CharField(max_length=10)
+    def __str__(self):
+        return self.comuna
 
 
 class Vehiculo(models.Model):
@@ -97,3 +99,11 @@ class Calificacion(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username} - {self.dueno.user.username}"
+
+class ArriendoCliente(models.Model):
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
+    estacionamiento = models.ForeignKey(Estacionamiento, on_delete=models.CASCADE)
+    fecha_reserva = models.DateField(auto_now_add=True)  # Fecha de la reserva (puede cambiar según tus requerimientos)
+
+    def __str__(self):
+        return f"{self.cliente} - {self.estacionamiento} - {self.fecha_arriendo}"

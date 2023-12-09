@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.views.generic import CreateView
 from .forms import DuenoSignUpForm, ClienteSignUpForm, RegistroVehiculoForm, EstacionamientoForm
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Arrendamiento, Comuna, Estacionamiento, User, Cliente, Calificacion
+from .models import Arrendamiento, Comuna, Estacionamiento, User, Cliente, Calificacion, ArriendoCliente
 import pytz
 from datetime import datetime, timedelta
 from django.db.models import Q
@@ -13,6 +13,8 @@ from django.utils import timezone
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from geopy.geocoders import Nominatim
+from django.http import JsonResponse
 
 
 def index(request):
@@ -169,6 +171,8 @@ def error(request):
 
 
 
+from .models import ArriendoCliente
+
 def confirmar_reserva(request, estacionamiento_id):
     # Obtén el estacionamiento utilizando su ID
     estacionamiento = get_object_or_404(Estacionamiento, id=estacionamiento_id)
@@ -179,7 +183,15 @@ def confirmar_reserva(request, estacionamiento_id):
     # Guarda el cambio en la base de datos
     estacionamiento.save()
 
+    # Obtén el cliente correspondiente al usuario actual
+    cliente = get_object_or_404(User, cliente=request.user.id)
+
+    # Crea la instancia de ArriendoCliente con la instancia de Cliente y el estacionamiento
+    reserva = ArriendoCliente(cliente=cliente, estacionamiento=estacionamiento)
+    reserva.save()
+
     return redirect('pago_exitoso')
+
     
 def estacionamiento_dueno(request):
     # Verifica si el usuario está autenticado
@@ -332,6 +344,8 @@ def registro_vehiculo(request):
 
     return render(request, 'accounts/registro_vehiculo.html', {'form': form})
 
+from .models import Comuna
+
 def agregar_estacionamiento(request):
     if request.method == 'POST':
         form = EstacionamientoForm(request.POST)
@@ -341,6 +355,50 @@ def agregar_estacionamiento(request):
             estacionamiento.save()
             return redirect('index')  # Redirige a la página de perfil o donde sea apropiado
     else:
+        comunas = Comuna.objects.all()  # Obtener todas las comunas
         form = EstacionamientoForm()
+        form.fields['comuna'].queryset = comunas  # Pasar las comunas al campo del formulario
+
     return render(request, 'estacionamiento/agregar_estacionamiento.html', {'form': form})
 
+def arriendos_cliente(request):
+    if request.user.is_authenticated:
+        cliente_id = request.user.id
+
+        # Obtener los IDs de los estacionamientos arrendados por el cliente
+        ids_arriendos = ArriendoCliente.objects.filter(cliente_id=cliente_id).values_list('estacionamiento_id', flat=True)
+
+        # Obtener detalles de arriendos con información del Estacionamiento
+        arriendos = ArriendoCliente.objects.filter(estacionamiento_id__in=ids_arriendos).select_related('estacionamiento')
+
+        return render(request, 'estacionamiento/arriendos.html', {'arriendos': arriendos})
+    else:
+        return render(request, 'estacionamiento/error.html', {'mensaje': 'Debes iniciar sesión para ver tus arriendos.'})
+
+from django.shortcuts import get_object_or_404
+
+def eliminar_estacionamiento(request, estacionamiento_id):
+    estacionamiento = get_object_or_404(Estacionamiento, pk=estacionamiento_id)
+    if request.method == 'POST':
+        # Eliminar el estacionamiento
+        estacionamiento.delete()
+        # Redirigir a alguna página después de la eliminación (puede ser el mismo lugar o una página diferente)
+        return redirect('estacionamiento_dueno')  # Reemplaza 'index' con la vista a la que quieres redirigir después de eliminar
+    # En caso de que se intente acceder mediante GET u otra solicitud, puedes manejarlo aquí
+    # Esto podría ser un error o redirigir a alguna otra página
+    return HttpResponse("Operación no permitida", status=405)
+
+def obtener_latitud_longitud(direccion):
+    geolocalizador = Nominatim(user_agent="myGeocoder")
+    location = geolocalizador.geocode(direccion)
+    if location:
+        return location.latitude, location.longitude
+    return None, None  # En caso de no encontrar la ubicación
+
+def obtener_coordenadas(request):
+    if request.method == 'GET' and 'direccion' in request.GET and 'comuna' in request.GET:
+        direccion = request.GET['direccion'] + ', ' + request.GET['comuna'] + ', Chile'
+        lat, lon = obtener_latitud_longitud(direccion)
+        return JsonResponse({'latitud': lat, 'longitud': lon})
+    else:
+        return JsonResponse({}, status=400)

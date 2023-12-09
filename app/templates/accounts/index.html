@@ -56,7 +56,7 @@
             {% csrf_token %}
             {% if user.is_authenticated %}
                 {% if user.is_owner %}
-                    <a href="" class="btn">Registrar Estacionamiento</a>
+                    <a href="{% url 'agregar_estacionamiento' %}" class="btn">Registrar Estacionamiento</a>
                 {% else %}
                     <a href="{% url 'buscar' %}" class="btn" style="background-color: rgb(71, 133, 13); color: #ffffff; padding: 10px; display: inline-block; text-decoration: none; transition: background-color 0.2s;"
                     onmouseover="this.style.backgroundColor='red'" onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">

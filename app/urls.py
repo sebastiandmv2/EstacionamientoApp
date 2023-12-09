@@ -10,7 +10,7 @@ urlpatterns=[
      path('logout/',views.logout_view, name='logout'),
      path('buscar/',views.buscar, name='buscar'),
      path('pago_exitoso/', views.pago_exitoso, name='pago_exitoso'),
-     path('arriendos/', views.arriendos, name='arriendos'),
+     path('arriendos/', views.arriendos_cliente, name='arriendos_cliente'),
      path('estacionamiento_dueno/', views.estacionamiento_dueno, name='estacionamiento_dueno'),
      path('editar_arrendamiento/<int:arrendamiento_id>/', views.editar_arrendamiento, name='editar_arrendamiento'),
      path('confirmar_cancelacion/', views.confirmar_cancelacion, name='confirmar_cancelacion'),
@@ -26,6 +26,10 @@ urlpatterns=[
      path('perfil/', views.perfil, name='perfil'),
      path('registro_vehiculo/', views.registro_vehiculo, name='registro_vehiculo'), 
      path('agregar-estacionamiento/', views.agregar_estacionamiento, name='agregar_estacionamiento'),
+     path('eliminar_estacionamiento/<int:estacionamiento_id>/', views.eliminar_estacionamiento, name='eliminar_estacionamiento'),
+     path('obtener_coordenadas/', views.obtener_coordenadas, name='obtener_coordenadas'),
+
+
     
 
 ]

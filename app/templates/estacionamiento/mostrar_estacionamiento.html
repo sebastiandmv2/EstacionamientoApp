@@ -4,69 +4,95 @@
 <div class="container mt-5">
     <h1 class="display-4">Resultados de la Búsqueda</h1>
 
-        <ul class="list-group">
-            {% for estacionamiento in estacionamientos_disponibles %}
-
-            <li class="list-group-item col-md-6 d-flex justify-content-between align-items-center">
-                <div>
-                    <!-- <span style="display: block;">Comuna: {{ estacionamiento.comuna.comuna }}</span> -->
-                    <span style="display: block;">Dirección: {{ estacionamiento.direccion }}</span>
-                    <div class="cuadro-costohora">
-                        Precio por Hora: ${{ estacionamiento.costo_por_hora }}
-                    </div>
+    <ul class="list-group">
+        {% for estacionamiento in estacionamientos_disponibles %}
+        <li class="list-group-item col-md-6 d-flex justify-content-between align-items-center">
+            <div>
+                <span style="display: block;">Dirección: {{ estacionamiento.direccion }}, {{ estacionamiento.comuna.comuna }}</span>
+                <div class="cuadro-costohora">
+                    Precio por Hora: ${{ estacionamiento.costo_por_hora }}
                 </div>
-
-                <div>
-                    <a href="#" class="btn btn-reservar" data-toggle="modal"
-                    data-target="#modal{{ estacionamiento.id }}"
-                    data-estacionamiento-id="{{ estacionamiento.id }}">Reservar</a>
-                </div>
-            </li>
-            {% empty %}
-            <div class="alert alert-info mt-3">
-                No se encontraron estacionamientos disponibles.
             </div>
-            {% endfor %}
-        </ul>
 
-    <div class="row">
-        <div class="col-md-6">
-            <!-- Modal para cada estacionamiento -->
-            {% for estacionamiento in estacionamientos_disponibles %}
-            <div class="modal fade" id="modal{{ estacionamiento.id }}" tabindex="-1" role="dialog"
-                aria-labelledby="modalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalLabel">Reservar Estacionamiento</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Estacionamiento: {{ estacionamiento.direccion }}</p>
-                            <p>Total de horas a reservar: {{ horas_totales }} horas</p>
-                            <p>Valor a Pagar: ${{ costo_total }}</p>
+            <div>
+                <a href="#" class="btn btn-reservar" data-toggle="modal"
+                   data-target="#modal{{ estacionamiento.id }}"
+                   data-estacionamiento-id="{{ estacionamiento.id }}">Reservar</a>
+            </div>
+        </li>
+        {% empty %}
+        <div class="alert alert-info mt-3">
+            No se encontraron estacionamientos disponibles.
+        </div>
+        {% endfor %}
+    </ul>
 
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <div class="modal-footer">
-                                <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
-                                <!-- Agrega un enlace o botón para confirmar la reserva -->
-                                <!-- Dentro del bucle para cada estacionamiento -->
-                                <a href="{% url 'confirmar_reserva' estacionamiento.id %}" class="btn">Confirmar Reserva</a>
-
-
-                            </div>
-                        </div>
-                    </div>
+    {% for estacionamiento in estacionamientos_disponibles %}
+    <!-- Modal para cada estacionamiento -->
+    <div class="modal fade" id="modal{{ estacionamiento.id }}" tabindex="-1" role="dialog"
+         aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Reservar Estacionamiento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Estacionamiento: {{ estacionamiento.direccion }}</p>
+                    <p>Precio por Hora: ${{ estacionamiento.costo_por_hora }}</p>
+                    <div id="map{{ estacionamiento.id }}" style="height: 300px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
+                    <!-- Agrega un enlace o botón para confirmar la reserva -->
+                    <!-- Dentro del bucle para cada estacionamiento -->
+                    <a href="{% url 'confirmar_reserva' estacionamiento.id %}" class="btn">Confirmar Reserva</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $('#modal{{ estacionamiento.id }}').on('shown.bs.modal', function () {
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'obtener_coordenadas' %}",
+                data: {
+                    direccion: '{{ estacionamiento.direccion }}',
+                    comuna: '{{ estacionamiento.comuna.comuna }}' // Asegúrate de que esto sea el valor correcto
+                },
+                success: function (data) {
+                    if (data.error) {
+                        console.log('Error obteniendo las coordenadas:', data.error);
+                    } else {
+                        // Llama a la función para obtener las coordenadas
+                        var latitud = data.latitud;
+                        var longitud = data.longitud;
+                        initMap(latitud, longitud, 'map{{ estacionamiento.id }}');
+                    }
+                },
+                error: function (error) {
+                    console.log('Error obteniendo las coordenadas:', error);
+                }
+            });
+        });
+    
+        function initMap(lat, lng, mapId) {
+            const myLatLng = { lat: lat, lng: lng };
+            const map = new google.maps.Map(document.getElementById(mapId), {
+                zoom: 15,
+                center: myLatLng
+            });
+            const marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: 'Ubicación del Estacionamiento'
+            });
+        }
+    </script>
+    
     {% endfor %}
-
-
-    {% endblock %}
+</div>
+{% endblock %}

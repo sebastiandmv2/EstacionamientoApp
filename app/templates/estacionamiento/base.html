@@ -9,13 +9,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/53580091aa.js" crossorigin="anonymous"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGXqasq9l0Yc3e9TXe77se1_nKAsOZc1w"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'custom.css' %}">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar nav ml-auto">
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
                 <img src="{% static 'img/Logo.png' %}" alt="Logo" width="80" height="60" class="d-inline-block align-text-top">
@@ -44,15 +45,12 @@
                               Perfil
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
                                 {% if user.cliente %}
-                                    <li><a class="dropdown-item" href="{% url 'arriendos' %}">Mis Arriendos</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'arriendos_cliente' %}">Mis Arriendos</a></li>
                                 {% elif user.dueno %}
                                     <li><a class="dropdown-item" href="{% url 'estacionamiento_dueno' %}">Mis Estacionamientos</a></li>
                                     <li><a class="dropdown-item" href="{% url 'agregar_estacionamiento' %}">Registrar Estacionamiento</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'reportes' %}">Reportes</a></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="#">Ayuda</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
