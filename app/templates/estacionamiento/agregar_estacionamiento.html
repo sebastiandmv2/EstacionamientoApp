@@ -6,7 +6,12 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn transition" style="margin-top: 20px; float: right;">Guardar</button>
+        <button type="submit" class="btn transition" style="margin-top: 20px; float: right; background-color: rgb(71, 133, 13); color: #ffffff; transition: background-color 0.2s;"
+        onmouseover="this.style.backgroundColor='red'"
+        onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+    Guardar
+</button>
+
     </form>
 </div>
 {% endblock %}

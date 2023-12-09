@@ -16,19 +16,30 @@
                             <!-- Botón para deshabilitar si está habilitado -->
                             <form method="post" action="{% url 'deshabilitar_estacionamiento' estacionamiento.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Deshabilitar</button>
-                            </form>
+                                <button type="submit" class="btn btn-danger" style="background-color: rgb(71, 133, 13); color: #ffffff; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='red'"
+                                onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+                            Deshabilitar
+                        </button>
+                                                    </form>
                         {% else %}
                             <!-- Botón para habilitar si está deshabilitado -->
                             <form method="post" action="{% url 'habilitar_estacionamiento' estacionamiento.id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-success">Habilitar</button>
-                            </form>
+                                <button type="submit" class="btn btn-success" style="background-color: rgb(71, 133, 13); color: #ffffff; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='red'"
+                                onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+                            Habilitar
+                        </button>
+                                                    </form>
                         {% endif %}
                         
                         <!-- Botón para eliminar con confirmación -->
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDelete{{ estacionamiento.id }}">
-                            Eliminar
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDelete{{ estacionamiento.id }}" style="background-color: rgb(71, 133, 13); color: #ffffff; transition: background-color 0.2s;"
+                        onmouseover="this.style.backgroundColor='red'"
+                        onmouseout="this.style.backgroundColor='rgb(71, 133, 13)'">
+                    Eliminar
+                </button>                            
                         </button>
 
                         <!-- Modal de confirmación -->

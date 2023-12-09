@@ -12,76 +12,27 @@
     color: white;
   }
   
-  .form-control{
-    background-color:  #9C88B8;
-  
-  }
-  .label_registro{
-  
-    color: #9C88B8;
-  }
-  
-  .h2{
-    margin-top: 50px; 
-    color: #4300BE;
-  }
-  .btn{
-    background-color: #FFA011; 
-    color: #FFFFFF;
-  }
-  
-  #password,#email{
-    background-color: #E5E0EC;
-  }
-  
-  
-  .cuadro-costohora {
-    border: 2px solid purple; /* Borde morado */
-    border-radius: 10px; /* Bordes redondeados */
-    padding: 5px 10px; /* Espaciado interno */
-    color: purple; /* Texto morado */
-    background-color: transparent; /* Fondo transparente */
-    display: inline-block; /* Para que esté en línea con el botón Reservar */
-  }
-  
-  #footer {
-    background-image: url('app/javascript.js');
-    /* Puedes ajustar otras propiedades de fondo según tus necesidades */
-    background-size: cover;
-    background-repeat: no-repeat;
-    /* Añade otras propiedades de estilo aquí */
-  }
-  
-  
-  /* Estilo para el campo "Rut" */
-  #rut-wrapper {
-    background-color: #E5E0EC; /* Color de fondo similar a otros campos */
-    border-radius: 5px; /* Bordes redondeados */
-    padding: 5px; /* Espaciado interno */
-  }
-  
-  /* Estilo para el botón "Valida RUT" */
-  #btnvalida {
-    background-color: #FFA011; /* Color de fondo similar a otros botones */
-    color: #FFFFFF; /* Color de texto en el botón */
-    border: none; /* Quita el borde del botón si es necesario */
-  }
-  
-  /* Estilo para el cuadro de texto "ej: 11111111" */
-  #txt_rut::placeholder {
-    font-size: 14px; /* Tamaño de fuente similar a otros campos */
-    color: #000; /* Color de texto similar a otros campos */
-    font-family: Arial, sans-serif; /* Tipografía similar a otros campos */
-  }
-  
-  
-  .custom-btn {
-    background-color: #9C88B8;
-    color: white; /* Cambia el color del texto para que sea visible en el fondo */
-    border: none; /* Elimina el borde si es necesario */
+  * {
+    font-family: "Times New Roman", sans-serif;
 }
 
-.rating i.rated {
-  color: rgb(230, 136, 12);  /* o el color que desees para las estrellas seleccionadas */
+button {
+  background-color: rgb(71, 133, 13);
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: red;
+}
+
+button.btn.btn-danger {
+  background-color: rgb(71, 133, 13);
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+
+button.btn.btn-danger:hover {
+  background-color: red;
 }
 
